@@ -287,3 +287,57 @@ SELECT countries.name AS country,
 FROM countries
 ORDER BY cities_num DESC, country
 LIMIT 9;
+
+
+-- Select code, and language count as lang_num
+SELECT code, COUNT(*) AS lang_num
+FROM languages
+GROUP BY code;
+
+-- Select relevant fields
+Select  code, inflation_rate, unemployment_rate
+from economies
+WHERE year = 2015 
+  AND code NOT IN
+-- Subquery returning country codes filtered on gov_form
+	(Select code
+  from countries
+  WHERE gov_form  in ('Republic' ,'Monarchy')
+  )
+ORDER BY inflation_rate;
+
+
+-- Select relevant fields
+Select  code, inflation_rate, unemployment_rate
+from economies
+WHERE year = 2015 
+  AND code NOT IN
+-- Subquery returning country codes filtered on gov_form
+	(Select code
+  from countries
+  WHERE gov_form  like '%Monarchy%' or gov_form  like  
+    '%Republic%')
+ORDER BY inflation_rate;
+
+
+
+
+	-- Select fields from cities
+SELECT 
+	name, 
+    country_code, 
+    city_proper_pop, 
+    metroarea_pop,
+    city_proper_pop / metroarea_pop * 100 AS city_perc
+FROM cities
+-- Use subquery to filter city name
+WHERE name IN
+  (SELECT capital
+   FROM countries
+   WHERE (continent = 'Europe'
+   OR continent LIKE '%America'))
+-- Add filter condition such that metroarea_pop does not have null values
+	  AND metroarea_pop IS NOT NULL
+-- Sort and limit the result
+ORDER BY city_perc DESC
+LIMIT 10;
