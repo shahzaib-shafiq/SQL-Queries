@@ -17,11 +17,18 @@ SELECT standard_qty,SUM(standard_qty) OVER (PARTITION BY DATE_TRUNC('month',occu
 from orders
 
 
-SELECT standard_qty,
-DATE_TRUNC('month',occured_at) AS month,
-SUM(standard_qty) OVER PARTITION BY DATE_TRUNC('month',occured_at) OR 
-SUM (standard_qty) OVER ORDER BY occured_at AS running_total
-FROM orders 
+
+
+
+
+SELECT
+    standard_qty,
+    DATE_TRUNC('month', occurred_at) AS month,
+    SUM(standard_qty) OVER (PARTITION BY DATE_TRUNC('month', occurred_at)) AS monthly_total,
+    SUM(standard_qty) OVER (ORDER BY occurred_at) AS running_total
+FROM
+    orders;
+
 
 
 
