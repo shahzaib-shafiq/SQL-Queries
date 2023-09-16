@@ -1,6 +1,8 @@
 SELECT LEFT(primary_poc, 3)
 FROM accounts
 
+
+
 SELECT LEFT(primary_poc, 3), RIGHT(primary_poc, 3)
 FROM accounts
 
@@ -10,18 +12,12 @@ FROM accounts
 SELECT POSITION(' ' IN primary_poc)
 FROM accounts
 
+SELECT 
+    primary_poc AS full_name,
+    LEFT(primary_poc, POSITION(' ' IN primary_poc) - 1) AS first_name
+FROM accounts;
 
-SELECT primary_poc AS full_name, 
-(
-    SELECT LEFT(primary_poc, (
-    SELECT POSITION(' ' IN primary_poc)
-    FROM accounts
-)
 
-)
-FROM accounts
-AS first_name
-)
 
 SELECT primary_poc AS full_name, 
 UPPER(LEFT(primary_poc, POSITION(' ' IN primary_poc))) AS left_name,
@@ -76,17 +72,23 @@ FROM accounts
 -- 4th = last name last char
 -- 5th, 6th, 7th, 8th = company account id
 -- next characters = account name
-
 WITH sq AS (
     SELECT 
-        primary_poc AS full_name, 
-        UPPER(LEFT(primary_poc, POSITION(' ' IN primary_poc))) AS left_name,
-        LOWER(RIGHT(primary_poc, LENGTH(primary_poc) - POSITION(' ' IN primary_poc))) AS right_name
-    FROM accounts
+        a.primary_poc AS full_name, 
+        UPPER(LEFT(a.primary_poc, POSITION(' ' IN a.primary_poc))) AS left_name,
+        LOWER(RIGHT(a.primary_poc, LENGTH(a.primary_poc) - POSITION(' ' IN a.primary_poc))) AS right_name,
+        a.id AS account_id,
+        a.name AS account_name
+    FROM accounts a
 )
 
 SELECT 
-    LEFT(left_name, 1) || RIGHT(right_name, 1) || SUBSTRING(left_name FROM 2) AS modified_name
+    LEFT(left_name, 1) || 
+    RIGHT(right_name, 1) || 
+    SUBSTRING(left_name FROM 2) || 
+    SUBSTRING(right_name FROM 2) || 
+    LPAD(account_id::text, 4, '0') || 
+    account_name AS modified_name
 FROM sq;
 
 
