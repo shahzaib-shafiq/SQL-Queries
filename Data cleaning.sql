@@ -84,10 +84,32 @@ WITH sq AS (
 
 SELECT 
     LEFT(left_name, 1) || 
+    LEFT(right_name, 1) || 
+    RIGHT(left_name,1) || 
+    RIGHT(right_name,1) || 
+    SUBSTRING(account_id::text, 4, '0') || 
+    account_name AS modified_name
+FROM sq;
+
+
+
+--RIGHT
+WITH sq AS (
+    SELECT 
+        a.primary_poc AS full_name, 
+        UPPER(LEFT(a.primary_poc, POSITION(' ' IN a.primary_poc))) AS left_name,
+        LOWER(RIGHT(a.primary_poc, LENGTH(a.primary_poc) - POSITION(' ' IN a.primary_poc))) AS right_name,
+        a.id AS account_id,
+        a.name AS account_name
+    FROM accounts a
+)
+
+SELECT 
+    LEFT(left_name, 1) || 
+    LEFT(right_name, 1) || 
+    RIGHT(left_name, 1) || 
     RIGHT(right_name, 1) || 
-    SUBSTRING(left_name FROM 2) || 
-    SUBSTRING(right_name FROM 2) || 
-    LPAD(account_id::text, 4, '0') || 
+    SUBSTRING('0000'||account_id::VARCHAR, 5,8) || 
     account_name AS modified_name
 FROM sq;
 

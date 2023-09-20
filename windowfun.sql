@@ -9,8 +9,6 @@ SELECT standard_qty,SUM(standard_qty) OVER (PARTITION BY occurred_at)
 from orders
 
 
-SELECT occured_at ,standard_qty,SUM(standard_qty) OVER (PARTITION BY occurred_at)
-from orders
 
 
 SELECT standard_qty,SUM(standard_qty) OVER (PARTITION BY DATE_TRUNC('month',occurred_at))
